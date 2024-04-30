@@ -87,9 +87,8 @@ export class AjoutReclamationComponent {
       this.reclamationService.saveReclamation(this.nouvelleReclamation).subscribe({
         next: async (response) => {
           // Generate and send PDF
-          const formData = new FormData();
           console.log('Current User:', this.nouvelleReclamation.user?.id);
-          console.log('offre added', response);
+          console.log('reclamation added', response);
 
           this.dialog.open(PopupComponent, {
             width: '400px', // Define the popup width

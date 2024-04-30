@@ -12,7 +12,6 @@ import { OffreComponent } from './offre/offre.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AjoutReclamationComponent } from './components/ajout-reclamation/ajout-reclamation.component';
 import { PopupComponent } from './components/ajout-reclamation/popupconfirmation/popup/popup.component';
-import { LoginComponent } from './login/login.component';
 import { ModifierReclamationComponent } from './components/modifier-reclamation/modifier-reclamation.component';
 import { ReclamationsComponent } from './components/reclamations copy/reclamations.component';
 import { MatTableModule } from '@angular/material/table';
@@ -24,6 +23,7 @@ import { AdminsidebarComponent } from './components/admin/adminsidebar/adminside
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
+import { PopupsuccessComponent } from './components/modifier-reclamation/popupsuccess/popupsuccess/popupsuccess.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +34,6 @@ import { HomeComponent } from './components/home/home.component';
     AjoutReclamationComponent,
     ModifierReclamationComponent,
     PopupComponent,
-    LoginComponent,
     RegisterComponent,
     HomeComponent,
     HeaderComponent,
@@ -43,6 +42,7 @@ import { HomeComponent } from './components/home/home.component';
     AdminsidebarComponent,
     AdminheaderComponent,
     PopupComponent,
+    PopupsuccessComponent,
 
   
   

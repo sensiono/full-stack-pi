@@ -17,7 +17,7 @@
 <div class="container" *ngIf="reclamation">
   <div class="col-lg-12 mb-7">
     <h2 class="font-size-6 mb-4">Modifier la réclamation</h2>
-    <form (submit)="modifierReclamation()">
+    <form (ngSubmit)="modifierReclamation(reclamationForm)" #reclamationForm="ngForm">
       <div class="form-group">
         <label for="description" class="font-size-4 font-weight-semibold text-black-2 mb-5 line-height-reset">Description:</label>
         <textarea class="form-control h-px-144" id="description" name="description" [(ngModel)]="reclamation.description" required></textarea>
