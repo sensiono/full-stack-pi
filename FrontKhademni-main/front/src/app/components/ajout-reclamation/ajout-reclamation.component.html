@@ -1,0 +1,40 @@
+<app-header></app-header>
+
+<div class="container" style="padding: 200px 0 100px;">
+  <h2 class="font-size-6 mb-4">Help us improve our platform!</h2>
+  
+  <form (ngSubmit)="saveReclamation(reclamationForm)" #reclamationForm="ngForm">
+    <!-- Description Field -->
+    <div class="form-group">
+      <textarea
+        class="form-control h-px-144"
+        id="description"
+        name="description"
+        [(ngModel)]="nouvelleReclamation.description"
+        minlength="50"
+        required
+        [ngClass]="{'is-invalid': description.invalid && description.touched}"
+        #description="ngModel"
+      ></textarea>
+      <!-- Validation messages -->
+      <div *ngIf="description.invalid && description.touched" class="text-danger">
+        <span *ngIf="description.errors?.['required']">La description ne peut pas être vide.</span>
+        <span *ngIf="description.errors?.['minlength']">La description doit contenir au moins 50 caractères.</span>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-4">
+      <button
+        type="submit"
+        class="btn btn-primary text-uppercase w-100 h-px-48"
+        [disabled]="reclamationForm.invalid"
+      >
+        Ajouter
+      </button>
+    </div>
+  </form>
+</div>
+<app-footer></app-footer>
+
+

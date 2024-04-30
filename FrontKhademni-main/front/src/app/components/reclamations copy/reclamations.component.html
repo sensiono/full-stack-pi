@@ -1,0 +1,188 @@
+<!-- Include the app header -->
+<app-adminheader></app-adminheader>
+<app-adminsidebar></app-adminsidebar>
+
+
+
+<div class="dashboard-main-container mt-25 mt-lg-31" id="dashboard-body" >
+  <!-- Back Button and Export Button Section -->
+  <div class="row justify-content-between align-items-center"> <!-- Distribute space between items -->
+    <!-- Back Button Section -->
+    <div class="col-6"> <!-- Use a flexible grid to keep the back button to the left -->
+      <div class="d-flex align-items-center">
+        <a
+      class="d-flex align-items-center back-button" 
+      (click)="goBack()" 
+      style="margin-left: 10px;"> <!-- Adjusted left margin -->
+      <i class="icon icon-small-left bg-white circle-40 mr-2 font-size-5 text-black font-weight-bold shadow-8"></i>
+      <span class="font-size-4 font-weight-bold text-black">Back</span>
+    </a>
+      </div>
+    </div>
+
+    <!-- Export to Excel Section -->
+    <div class="col-6 d-flex justify-content-end"> <!-- Use a flex container to align to the right -->
+      <button class="btn btn-primary" (click)="exportToExcel()">Export to Excel</button>
+    </div>
+  </div>
+  
+
+<!-- Main Container -->
+<div class="container mt-5 mb-5"> <!-- Standardized margins -->
+  <h2>Liste des réclamations</h2> <!-- Section Heading -->
+
+  <!-- Category Section with New Data -->
+  <div class="row"> <!-- Category blocks in a row -->
+    <!-- Total Reclamations Today -->
+    <div class="col-xxl-3 col-xl-4 col-lg-6 col-sm-6">
+      <a href="#" class="media bg-white rounded-4 pl-8 pt-9 pb-9 pr-7 hover-shadow-1 mb-9 shadow-8">
+        <div class="text-blue bg-blue-opacity-1 circle-56 font-size-6 mr-7">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div>
+          <h5 class="font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1">
+            <span class="counter">{{ totalReclamationsToday }}</span> <!-- Display total reclamations for today -->
+          </h5>
+          <p class="font-size-4 font-weight-normal text-gray mb-0">Reclamations Today</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Total Reclamations This Week -->
+    <div class="col-xxl-3 col-xl-4 col-lg-6 col-sm-6">
+      <a href="#" class="media bg-white rounded-4 pl-8 pt-9 pb-9 pr-7 hover-shadow-1 mb-9 shadow-8">
+        <div class="text-pink bg-pink-opacity-1 circle-56 font-size-6 mr-7">
+          <i class="fas fa-user"></i>
+        </div>
+        <div>
+          <h5 class="font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1">
+            <span class="counter">{{ totalReclamationsThisWeek }}</span> <!-- Display total reclamations this week -->
+          </h5>
+          <p class="font-size-3 font-weight-normal text-gray mb-0">Reclamations This Week</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Total Reclamations This Month -->
+    <div class="col-xxl-3 col-xl-4 col-lg-6 col-sm-6">
+      <a href="#" class="media bg-white rounded-4 pl-8 pt-9 pb-9 pr-7 hover-shadow-1 mb-9 shadow-8">
+        <div class="text-orange bg-orange-opacity-1 circle-56 font-size-6 mr-7">
+          <i class="fas fa-eye"></i>
+        </div>
+        <div>
+          <h5 class="font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1">
+            <span class="counter">{{ totalReclamationsThisMonth }}</span> <!-- Display total reclamations this month -->
+          </h5>
+          <p class="font-size-3 font-weight-normal text-gray mb-0">Reclamations This Month</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-xxl-3 col-xl-4 col-lg-6 col-sm-6">
+      <a href="#" class="media bg-white rounded-4 pl-8 pt-9 pb-9 pr-7 hover-shadow-1 mb-9 shadow-8">
+        <div class="text-egg-blue bg-egg-blue-opacity-1 circle-56 font-size-6 mr-7">
+          <i class="fas fa-mouse-pointer"></i>
+        </div>
+        <div>
+          <h5 class="font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1">
+            {{ mostCommonReclamationType }} <!-- Display the most common reclamation type -->
+          </h5>
+          <p class="font-size-4 font-weight-normal text-gray mb-0">Most Type</p>
+        </div>
+      </a>
+    </div>
+    <!-- Create space between elements -->
+      
+    
+    
+      <!-- Search Field -->
+      <div class="col-lg-6 mb-5 d-flex justify-content-end"> <!-- Align search to the right -->
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by User ID"
+          (input)="applyFilter($event)"> <!-- Apply filtering on input -->
+      </div>
+
+      <!-- Filter Dropdown -->
+      <div class="col-lg-3 mb-5" style="margin-left: 311px;"> <!-- Left-side column for the filter dropdown -->
+        <select class="form-control" (change)="applySort($event) " > <!-- Apply sorting on change -->
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+    </div>
+    
+    
+
+  <!-- Table for Listing Reclamations -->
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"> <!-- Material table with elevation -->
+    <!-- Table Columns -->
+    <ng-container matColumnDef="id"> <!-- ID Column -->
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let reclamation">{{ reclamation.idRec }}</td>
+    </ng-container>
+
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Description</th>
+      <td mat-cell *matCellDef="let reclamation">{{ reclamation.description }}</td>
+    </ng-container>
+
+    <!-- État (State) Column -->
+    <ng-container matColumnDef="etat">
+      <th mat-header-cell *matHeaderCellDef>État</th>
+      <td mat-cell *matCellDef="let reclamation">{{ reclamation.etat }}</td>
+    </ng-container>
+
+    <!-- Created At Column -->
+    <ng-container matColumnDef="createdAt"> <!-- Created at with date formatting -->
+      <th mat-header-cell *matHeaderCellDef>Créée le</th>
+      <td mat-cell *matCellDef="let reclamation">{{ reclamation.createdAt | date:'short' }}</td>
+    </ng-container>
+
+    <!-- Type Column (New) -->
+    <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let reclamation">{{ reclamation.type }}</td>
+      </ng-container>
+
+    <!-- User ID Column -->
+    <ng-container matColumnDef="userId">
+      <th mat-header-cell *matHeaderCellDef>User ID</th>
+      <td mat-cell *matCellDef="let reclamation">{{ getUserId(reclamation) }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions"> <!-- Column for action buttons -->
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let reclamation">
+        <button (click)="modifierReclamation(reclamation.idRec)" class="btn btn-outline-success">Modifier</button>
+        <button (click)="deleteReclamation(reclamation.idRec)" class="btn btn-outline-danger">Supprimer</button>
+      </td>
+    </ng-container>
+
+    <!-- Header and Row Structure -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr> <!-- Table header row -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> <!-- Table data row -->
+  </table>
+
+  <!-- Paginator for Pagination -->
+  <mat-paginator
+    [length]="totalReclamations"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    (page)="pageEvent($event)"></mat-paginator>
+
+  <!-- Chart for Reclamations per User -->
+  <div class="container mt-5"> <!-- Section for chart -->
+    <h2>Statistiques des réclamations par utilisateur</h2>
+    <ngx-charts-pie-chart
+      [results]="reclamationsPerUser"
+      [legend]="true"
+      [explodeSlices]="false"
+      [doughnut]="false"></ngx-charts-pie-chart> <!-- Chart for statistics -->
+  </div>
+</div>
+</div>
+<!-- Include the app footer -->

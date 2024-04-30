@@ -1,0 +1,27 @@
+<h2>Créer une nouvelle offre</h2>
+
+<form (ngSubmit)="createOffre()">
+  <div>
+    <label for="titre">Titre :</label>
+    <input type="text" id="titre" name="titre" [(ngModel)]="newOffre.titre" required>
+  </div>
+  <div>
+    <label for="description">Description :</label>
+    <input type="text" id="description" name="description" [(ngModel)]="newOffre.description" required>
+  </div>
+  <!-- Ajouter d'autres champs d'offre -->
+  <div>
+    <label for="competenceRequise">Compétence Requise :</label>
+    <input type="text" id="competenceRequise" name="competenceRequise" [(ngModel)]="newOffre.competenceRequise" required>
+  </div>
+  <div>
+    <label for="duree">Durée :</label>
+    <input type="text" id="duree" name="duree" [(ngModel)]="newOffre.duree" required>
+  </div>
+  <div>
+    <label for="remuneration">Rémunération :</label>
+    <input type="number" id="remuneration" name="remuneration" [(ngModel)]="newOffre.remuneration" required>
+  </div>
+  <!-- Fin des champs d'offre -->
+  <button type="submit">Créer</button>
+</form>
