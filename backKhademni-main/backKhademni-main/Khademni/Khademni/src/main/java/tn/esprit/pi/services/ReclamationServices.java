@@ -1,12 +1,12 @@
 package tn.esprit.pi.services;
 
+import org.springframework.scheduling.annotation.Async;
 import tn.esprit.pi.entities.Reclamation;
 import tn.esprit.pi.entities.User;
 import tn.esprit.pi.repositories.IReclamationRepository;
 import tn.esprit.pi.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,12 +19,10 @@ import java.util.concurrent.TimeUnit;
 public class ReclamationServices implements IReclamationServices {
 
     private final IReclamationRepository ireclamationRepository;
-    private final UserRepository iUserReposetory;
+    private final UserRepository userRepository;
 
     @Override
     public Reclamation addReclamation(Reclamation reclamation) {
-
-        // Set createdAt to the current date and time
         reclamation.setCreatedAt(LocalDateTime.now());
         // Save the new reclamation
         Reclamation newReclamation = ireclamationRepository.save(reclamation);
@@ -39,7 +37,7 @@ public class ReclamationServices implements IReclamationServices {
     public CompletableFuture<Void> markReclamationAsSolved(Long reclamationId) {
         try {
             // Wait for 10 seconds before updating
-            TimeUnit.SECONDS.sleep(30);
+            TimeUnit.SECONDS.sleep(50);
 
             // Retrieve the reclamation by ID
             Reclamation reclamation = getById(reclamationId);
@@ -57,8 +55,18 @@ public class ReclamationServices implements IReclamationServices {
     }
 
     @Override
-    public Reclamation updateReclamation(Reclamation reclamation) {
-        return ireclamationRepository.save(reclamation);
+    public Reclamation updateReclamation(Reclamation reclamation, User currentUser) {
+        Reclamation existingReclamation = getById(reclamation.getIdRec());
+
+        // Check if the current user is authorized to update the reclamation
+        if (!existingReclamation.getUser().getId().equals(currentUser.getId())) {
+            throw new SecurityException("You are not authorized to update this reclamation");
+        }
+
+        existingReclamation.setDescription(reclamation.getDescription());
+        existingReclamation.setEtat(reclamation.getEtat());
+
+        return ireclamationRepository.save(existingReclamation);
     }
 
     @Override

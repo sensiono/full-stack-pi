@@ -35,7 +35,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                     cors.configurationSource(corsConfigurationSource());
                 })
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/v1/auth/**")
+                        req.requestMatchers("/api/v1/auth/**", "/chatbot/**")
                                 .permitAll()
                                 .requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.Admin.toString())
                                 .anyRequest()
@@ -52,6 +52,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:4200");
         configuration.addAllowedOrigin("http://localhost:8083");
+        configuration.addAllowedOrigin("http://localhost:8084");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

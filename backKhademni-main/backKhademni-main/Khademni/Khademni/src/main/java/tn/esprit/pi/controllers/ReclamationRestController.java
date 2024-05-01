@@ -1,7 +1,9 @@
 package tn.esprit.pi.controllers;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import tn.esprit.pi.entities.Reclamation;
 import tn.esprit.pi.entities.TypeReclamation;
+import tn.esprit.pi.entities.User;
 import tn.esprit.pi.services.EmailService;
 import tn.esprit.pi.services.IReclamationServices;
 import tn.esprit.pi.services.ReclamationTypeGuesser;
@@ -17,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RequestMapping("/reclamation")
-@AllArgsConstructor
+
 @RestController
 public class ReclamationRestController {
 
@@ -28,6 +30,14 @@ public class ReclamationRestController {
 
     @Autowired
     private EmailService emailService;
+
+    public ReclamationRestController(
+            IReclamationServices iReclamationServices,
+            EmailService emailService
+    ) {
+        this.iReclamationServices = iReclamationServices;
+        this.emailService = emailService;
+    }
 
 
 
@@ -70,26 +80,16 @@ public class ReclamationRestController {
     }
 
     @PutMapping("/updateRec")
-    public Reclamation updateReclamation(@RequestBody Reclamation reclamation) {
-        Reclamation existingReclamation = iReclamationServices.getById(reclamation.getIdRec());
-        String previousState = existingReclamation.getEtat();
-        String newState = reclamation.getEtat();
-
-        // If the reclamation is updated to "solved", send an email notification
-        if (!previousState.equals("solved") && newState.equals("solved")) {
-            emailService.sendEmail(
-                    "daadsoufi01@gmail.com", // Change to the recipient email
-                    "Reclamation Solved",
-                    "A reclamation with ID: " + reclamation.getIdRec() + " has been solved. Thank you for your patience."
-            );
+    public ResponseEntity<Reclamation> updateReclamation(
+            @RequestBody Reclamation reclamation,
+            @AuthenticationPrincipal User currentUser // Inject the current authenticated user
+    ) {
+        try {
+            Reclamation updatedReclamation = iReclamationServices.updateReclamation(reclamation, currentUser);
+            return ResponseEntity.ok(updatedReclamation);
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(null); // Return 403 Forbidden if unauthorized
         }
-
-        // Update the existing reclamation with new data
-        existingReclamation.setDescription(reclamation.getDescription());
-        existingReclamation.setEtat(reclamation.getEtat());
-
-        // Update the reclamation in the service
-        return iReclamationServices.updateReclamation(existingReclamation);
     }
 
 
