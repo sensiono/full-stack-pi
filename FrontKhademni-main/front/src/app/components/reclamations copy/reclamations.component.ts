@@ -8,6 +8,9 @@ import * as XLSX from 'xlsx'; // Import xlsx library
 import { formatDate } from '@angular/common';
 import * as moment from 'moment'; // Import moment.js
 import { Reclamation } from 'src/app/Models/reclamation/reclamation';
+import { jsPDF } from 'jspdf';
+import * as QRCode from 'qrcode';
+
 
 
 
@@ -19,7 +22,7 @@ import { Reclamation } from 'src/app/Models/reclamation/reclamation';
 export class ReclamationsComponent implements OnInit, AfterViewInit {
   reclamations: Reclamation[] = [];
   dataSource!: MatTableDataSource<Reclamation>;
-  reclamationsPerUser: { name: string, value: number }[] = [];
+  reclamationsPerType: { name: string, value: number }[] = [];
   colorScheme = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'] };
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -74,9 +77,6 @@ export class ReclamationsComponent implements OnInit, AfterViewInit {
 
         this.mostCommonReclamationType = mostCommonType ? mostCommonType : 'N/A';
 
-
-        
-
         this.totalReclamationsToday = reclamations.filter(
           (rec) => moment(rec.createdAt).format('YYYY-MM-DD') === today
         ).length;
@@ -96,7 +96,7 @@ export class ReclamationsComponent implements OnInit, AfterViewInit {
 
         
 
-        this.reclamationsPerUser = this.generateReclamationsPerUser(reclamations);
+        this.reclamationsPerType = this.generateReclamationsPerType(reclamations);
       },
       (error) => {
         console.error('Error loading reclamations:', error);
@@ -104,11 +104,11 @@ export class ReclamationsComponent implements OnInit, AfterViewInit {
     );
   }
 
-  generateReclamationsPerUser(reclamations: Reclamation[]): { name: string, value: number }[] {
-    const groupedReclamations = groupBy(reclamations, 'user.nomUtilisateur');
-    return Object.keys(groupedReclamations).map(userName => ({
-      name: userName,
-      value: groupedReclamations[userName].length
+  generateReclamationsPerType(reclamations: Reclamation[]): { name: string, value: number }[] {
+    const groupedReclamations = groupBy(reclamations, 'type');
+    return Object.keys(groupedReclamations).map((typeName) => ({
+      name: typeName,
+      value: groupedReclamations[typeName].length,
     }));
   }
 
@@ -171,6 +171,32 @@ export class ReclamationsComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = this.paginator; // Reconnect paginator
     }
   }
+
+  generatePDF(): void {
+    const pdf = new jsPDF();
+    const xOffset = 10;
+    let yOffset = 20;
+
+    pdf.setFontSize(16);
+    pdf.text('Liste des Réclamations', xOffset, yOffset); // Title
+  
+    yOffset += 20; // Space for next content
+  
+    pdf.setFontSize(12);
+    pdf.text("ID  Description  Etat  Type  User ID  Créée le", xOffset, yOffset); // Header
+  
+    yOffset += 10; // Start data entries
+  
+    this.reclamations.forEach((reclamation) => {
+        const dataLine = `${reclamation.idRec}  ${reclamation.description}  ${reclamation.etat}  ${reclamation.type || ''}  ${reclamation.user?.id || ''}  ${moment(reclamation.createdAt).format('YYYY-MM-DD HH:mm:ss')}`;
+        
+        pdf.text(dataLine, xOffset, yOffset); // Add data line
+        
+        yOffset += 10; // Increment for the next line
+    });
+  
+    pdf.save("reclamations.pdf"); // Save the PDF and trigger download
+}
   
   exportToExcel(): void {
     // Combine table data and visual statistics
@@ -183,7 +209,7 @@ export class ReclamationsComponent implements OnInit, AfterViewInit {
       'Créée le': moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'), // Format with moment.js
     }));
   
-    const visualStatistics = this.reclamationsPerUser.map(item => ({
+    const visualStatistics = this.reclamationsPerType.map(item => ({
       'User Name': item.name,
       'Reclamations Count': item.value
     }));

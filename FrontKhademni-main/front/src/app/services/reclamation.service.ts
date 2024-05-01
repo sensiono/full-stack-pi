@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Reclamation } from "../Models/reclamation/reclamation";
-import { AuthServiceService } from "./auth-service.service"; // Import AuthServiceService for JWT token
+import { AuthServiceService } from "./auth-service.service"; 
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +13,17 @@ export class ReclamationService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthServiceService // Inject AuthServiceService
+    private authService: AuthServiceService
   ) {}
 
-  // Get headers with authorization
   private getHeaders(): HttpHeaders {
     const jwt = localStorage.getItem('jwt'); // Retrieve JWT token
+    if (!jwt) {
+      console.warn("JWT token is missing");
+    }
 
     return new HttpHeaders({
-      Authorization: `Bearer ${jwt}`, // Add JWT token to the header
+      Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json'
     });
   }
@@ -51,5 +53,4 @@ export class ReclamationService {
     formData.append('file', pdfBlob, filename);
     return this.http.post(`${this.baseUrl}/sendPDF`, formData, { headers: this.getHeaders() });
   }
-
 }

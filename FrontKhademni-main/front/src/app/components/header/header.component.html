@@ -194,10 +194,10 @@
           <!-- Check if the user is connected -->
       <div class="header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex">
         <div *ngIf="userConnected; else elseBlock">
+          <span>{{ decodedJwtData?.sub }}</span> <!-- Display logged-in user's name -->
           <button class="btn btn-primary text-uppercase font-size-3" (click)="logout()">
             Logout
           </button>
-          <span>{{ decodedJwtData?.sub }}</span> <!-- Display logged-in user's name -->
         </div>
         <!-- Template for when the user is not logged in -->
         <ng-template #elseBlock>

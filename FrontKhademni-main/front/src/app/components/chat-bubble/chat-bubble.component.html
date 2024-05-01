@@ -1,0 +1,30 @@
+<!-- Chat Bubble - Toggle Chat -->
+<div class="chat-bubble" (click)="toggleChat()">
+  <i class="fas fa-comment"></i> <!-- Chat icon -->
+</div>
+
+<!-- Chat Widget - Hidden when isChatOpen is false -->
+<div class="chat-widget" [class.hidden]="!isChatOpen"> <!-- Use CSS class to control visibility -->
+  <div class="chat-header">
+    <span>Chat with Us!</span>
+    <button (click)="toggleChat()" class="close-button">&times;</button> <!-- Close chat -->
+  </div>
+
+  <div class="chat-content">
+    <!-- Display chat messages -->
+    <div class="chat-messages">
+      <div *ngFor="let message of chatHistory">
+        <div [ngClass]="{ 'client-message': message.sender === 'client', 'bot-message': message.sender === 'bot' }">
+          {{ message.text }}
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+  <!-- Chat Input for sending messages -->
+  <div class="chat-input">
+    <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..." />
+    <button (click)="sendMessage()" class="send-button">Send</button>
+  </div>
+</div>

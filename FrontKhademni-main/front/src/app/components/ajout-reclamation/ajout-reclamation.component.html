@@ -1,11 +1,14 @@
 <app-header></app-header>
+<div class="container" style="padding: 50px 0 100px;"></div>
+<!-- Form Container -->
+<div class="container" style="padding: 100px 0;">
+  <!-- Section Heading -->
+  <h2 class="font-size-6 mb-4 text-center text-primary">Help us improve our platform!</h2>
 
-<div class="container" style="padding: 200px 0 100px;">
-  <h2 class="font-size-6 mb-4">Help us improve our platform!</h2>
-  
   <form (ngSubmit)="saveReclamation(reclamationForm)" #reclamationForm="ngForm">
-    <!-- Description Field -->
+    <!-- Description Field with Icons and Placeholder -->
     <div class="form-group">
+      <label for="description" class="form-label">Your Feedback:</label>
       <textarea
         class="form-control h-px-144"
         id="description"
@@ -15,8 +18,13 @@
         required
         [ngClass]="{'is-invalid': description.invalid && description.touched}"
         #description="ngModel"
+        placeholder="Please describe your experience in at least 50 characters..."
       ></textarea>
-      <!-- Validation messages -->
+      
+      <!-- Icon for textarea -->
+      <i class="fas fa-comment-dots text-primary position-absolute" style="right: 10px; top: 35px;"></i>
+      
+      <!-- Validation Messages with Tooltips -->
       <div *ngIf="description.invalid && description.touched" class="text-danger">
         <span *ngIf="description.errors?.['required']">La description ne peut pas être vide.</span>
         <span *ngIf="description.errors?.['minlength']">La description doit contenir au moins 50 caractères.</span>
@@ -24,17 +32,18 @@
     </div>
 
     <!-- Submit Button -->
-    <div class="pt-4">
+    <div class="pt-4 text-center">
       <button
         type="submit"
-        class="btn btn-primary text-uppercase w-100 h-px-48"
+        class="btn btn-primary text-uppercase w-50 h-px-48"
         [disabled]="reclamationForm.invalid"
       >
-        Ajouter
+        Submit Feedback
       </button>
     </div>
   </form>
+  <app-chat-bubble></app-chat-bubble>
+
 </div>
+
 <app-footer></app-footer>
-
-

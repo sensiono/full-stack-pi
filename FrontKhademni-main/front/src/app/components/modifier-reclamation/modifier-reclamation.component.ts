@@ -2,15 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReclamationService } from 'src/app/services/reclamation.service';
 import { Reclamation } from 'src/app/Models/reclamation/reclamation';
-import { MatDialog } from '@angular/material/dialog'; // For pop-up dialog
-import { UserService } from 'src/app/services/user.service'; // Fetch current user
-import { NgForm } from '@angular/forms'; // Form validation
+import { MatDialog } from '@angular/material/dialog';
+import { NgForm } from '@angular/forms';
 import { PopupComponent } from '../ajout-reclamation/popupconfirmation/popup/popup.component';
 
 @Component({
   selector: 'app-modifier-reclamation',
   templateUrl: './modifier-reclamation.component.html',
-  styleUrls: ['./modifier-reclamation.component.css']
+  styleUrls: ['./modifier-reclamation.component.css'],
 })
 export class ModifierReclamationComponent implements OnInit {
   reclamation: Reclamation | null = null;
@@ -20,8 +19,7 @@ export class ModifierReclamationComponent implements OnInit {
     private reclamationService: ReclamationService,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog, // Dependency injection for pop-up dialog
-    private userService: UserService // To get the current user
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -29,25 +27,20 @@ export class ModifierReclamationComponent implements OnInit {
       this.reclamationId = +params['id'];
       this.loadReclamation();
     });
-
-    this.userService.getCurrentUser().subscribe({
-      next: (user) => {
-        console.log('Current User:', user);
-      },
-      error: (error) => {
-        console.error('Error fetching current user:', error);
-      }
-    });
   }
 
   loadReclamation(): void {
-    if (this.reclamationId) { 
+    if (this.reclamationId) {
       this.reclamationService.getReclamationById(this.reclamationId).subscribe(
-        (reclamation: Reclamation) => {
+        (reclamation) => {
           this.reclamation = reclamation;
         },
         (error) => {
           console.error("Error loading reclamation:", error);
+          if (error.status === 403) {
+            // Redirect to login if not authorized
+            this.router.navigate(['/login']);
+          }
         }
       );
     }
@@ -58,14 +51,16 @@ export class ModifierReclamationComponent implements OnInit {
       this.reclamationService.updateReclamation(this.reclamation).subscribe({
         next: () => {
           console.log('Reclamation updated successfully!');
-          this.dialog.open(PopupComponent, {
-            width: '400px', // Open a pop-up confirmation dialog
-          });
-          this.router.navigate(['/reclamations']); // Redirect after successful update
+          this.dialog.open(PopupComponent, { width: '400px' });
+          this.router.navigate(['/reclamations']);
         },
         error: (error) => {
           console.error('Error updating reclamation:', error);
-        },
+          if (error.status === 403) {
+            console.error("You do not have permission to update this reclamation");
+            this.router.navigate(['/login']); // Redirect to login if unauthorized
+          }
+        }
       });
     }
   }
@@ -78,6 +73,6 @@ export class ModifierReclamationComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/reclamations']); // Navigate back to the reclamations page
+    this.router.navigate(['/reclamations']);
   }
 }

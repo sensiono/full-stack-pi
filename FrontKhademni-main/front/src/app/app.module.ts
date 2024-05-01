@@ -24,6 +24,11 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { HomeComponent } from './components/home/home.component';
 import { PopupsuccessComponent } from './components/modifier-reclamation/popupsuccess/popupsuccess/popupsuccess.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { ChatBubbleComponent } from './components/chat-bubble/chat-bubble.component'; // Import MatButtonModule for triggering menus
+
 
 @NgModule({
   declarations: [
@@ -43,6 +48,7 @@ import { PopupsuccessComponent } from './components/modifier-reclamation/popupsu
     AdminheaderComponent,
     PopupComponent,
     PopupsuccessComponent,
+    ChatBubbleComponent,
 
   
   
@@ -60,6 +66,9 @@ import { PopupsuccessComponent } from './components/modifier-reclamation/popupsu
     MatTableModule, 
     MatPaginatorModule,
     MatDialogModule,
+    NgxChartsModule,
+    MatMenuModule,
+    MatButtonModule,
 
    
 

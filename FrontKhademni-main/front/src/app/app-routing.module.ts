@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'ajouter-reclamation', component: AjoutReclamationComponent },
   { path: 'modifier-reclamation/:id', component: ModifierReclamationComponent },
   { path: 'admin', component:  AdminmainComponent },
+  { path: '**', redirectTo: '' } // Handle unknown routes
   
 
 ];
